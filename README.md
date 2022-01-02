@@ -24,5 +24,5 @@
 <h4>Example:</h4>
   <code>$ node my_ciphering_cli -c "C1-C1-R0-A" -i "./input.txt" -o "./output.txt"</code>
   <p>input.txt: This is secret. Message about "_" symbol!</p>
-  <p>output.txt? Myxn xn nbdobm. Tbnnfzb ferlm "_" nhteru!</p>
+  <p>output.txt: Myxn xn nbdobm. Tbnnfzb ferlm "_" nhteru!</p>
   <p>config "C1-C1-R0-A" means "encode by Caesar cipher => encode by Caesar cipher => decode by ROT-8 => use Atbash"</p>
