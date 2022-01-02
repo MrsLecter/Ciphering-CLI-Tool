@@ -1,77 +1,52 @@
-const { encodeCipherCaesar, decodeCipherCaesar } = require('./cipherCaesar');
-const { encodeAtbash } = require('./cipherAtbash');
-const { encodeRot8, decodeRot8 } = require('./cipherRot-8');
+const {cipherCaesarStream, cipherRotStream, cipherAtbashStream} = require('./src/transformStream');
+const {Readable, writable} = require('stream');
+//const {CustomReadableStream} = require('./src/readSream');
+//const {CustomWritableStream} = require('./src/writeStream');
+const {toValidateCommand} = require('./src/validation');
 
-const line = 'This is secret. Message about "_" symbol!';
-
-const { stdout, stdin } = process;
-const { pipeline, Transform } = require('stream');
+const { stdout, stdin, stderr } = process;
+const { pipeline} = require('stream');
 const fs = require('fs');
 
-const [commandOption, chipherMark, inputCommand, inputWay, outputCommand, outputWay] = process.argv.slice(2);
-console.log(commandOption, chipherMark, inputCommand, inputWay, outputCommand, outputWay);
+const inputAlias = process.argv.slice(2);
 
-function toReadChipherCommand(chipherMark) {
+//validate input alias
+toValidateCommand(inputAlias);
+
+const [commandOption, cipherMark, inputCommand, inputWay, outputCommand, outputWay]  = process.argv.slice(2);
+
+//validate input alias
+toValidateCommand(inputAlias);
+
+const inputStream = ((inputAlias.indexOf('-i') + 1) || (inputAlias.indexOf('-input') + 1)) ? fs.createReadStream(inputWay) : stdin;
+const outputStream = ((inputAlias.indexOf('-o') + 1) || (inputAlias.indexOf('-output') + 1)) ? fs.createWriteStream(outputWay) : stdout;
+  
+// create stream pool
+function toReadChipherCommand(cipherMark) {
   let commandSequence = [];
-  let commandArray = chipherMark.split('-');
+  let commandArray = cipherMark.split('-');
   console.log(commandArray);
   for (let i = 0; i < commandArray.length; i++) {
     let flagY = +commandArray[i][1];
     if (commandArray[i].toLowerCase().includes('c')) {
-      if (flagY === 1) {
-        console.log(encodeCipherCaesar(line));
-        commandSequence.push(new Transform({
-          transform(chunk, encoding, callback) {
-            callback(null, encodeCipherCaesar(String(chunk)));
-          }
-        }));
-      } else if (flagY === 0) {
-        console.log(decodeCipherCaesar(line));
-        commandSequence.push(new Transform({
-          transform(chunk, encoding, callback) {
-            callback(null, decodeCipherCaesar(String(chunk)));
-          }
-        }));
-      }
+        commandSequence.push(cipherCaesarStream(flagY));
     } else if (commandArray[i].toLowerCase().includes('r')) {
-      if (flagY === 1) {
-        console.log(encodeRot8(line));
-        commandSequence.push(new Transform({
-          transform(chunk, encoding, callback) {
-            callback(null, encodeRot8(String(chunk)));
-          }
-        }));
-      } else if (flagY === 0) {
-        console.log(decodeRot8(line));
-        commandSequence.push(new Transform({
-          transform(chunk, encoding, callback) {
-            callback(null, decodeRot8(String(chunk)));
-          }
-        }));
-      }
+        commandSequence.push(cipherRotStream(flagY));
     } else if (commandArray[i].toLowerCase().includes('a')) {
-      console.log(encodeAtbash(line));
-      commandSequence.push(new Transform({
-        transform(chunk, encoding, callback) {
-          callback(null, encodeAtbash(String(chunk)));
-        }
-      }));
+      commandSequence.push(cipherAtbashStream());
     }
-
   }
   return commandSequence;
 }
 
+//create pipeline
 function toConvertText(commandSequence) {
   let dataStr = '';
   let outputStr = null;
-
-
-  const inputSteram = fs.createReadStream('./input.txt');
-  const outputStream = fs.createWriteStream('./output.txt');
-
+  console.log('in toConvertText')
+  
   pipeline(
-    inputSteram,
+    inputStream,
     ...commandSequence,
     outputStream,
     (err) => {
@@ -82,9 +57,8 @@ function toConvertText(commandSequence) {
       }
     }
 
-  )
+  );
 }
 
 
-toConvertText(toReadChipherCommand(chipherMark));
-
+toConvertText(toReadChipherCommand(cipherMark));

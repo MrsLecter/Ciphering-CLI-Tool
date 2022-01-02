@@ -1,6 +1,3 @@
-const inputText = 'How can you tell an extrovert from an introvert at NSA?';
-const outputText = 'Pwe kiv gwc bmtt iv mfbzwdmzb nzwu iv qvbzwdmzb ib VAI?';
-
 const ALPHABET = 'abcdefghijklmnopqrstuvwxyz';
 const ALPHABET2= 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
@@ -59,5 +56,3 @@ function decodeRot8(inputText) {
 }
 
 module.exports = {encodeRot8, decodeRot8};
-
-console.log(decodeRot8('Bpqa qa amkzmb. Umaaiom ijwcb "_" agujwt!'));

@@ -1,9 +1,7 @@
-
 function encodeCipherCaesar(inputText, encodingFlag=1) {
     let encodedString = '';
     let newCodePoint = null;
     for(let i = 0; i < inputText.length; i++){
-        // console.log(inputText[i]);
         if(inputText[i].charCodeAt(0) > 65 && inputText[i].charCodeAt(0) < 123){
             newCodePoint = inputText[i].charCodeAt(0);
             if(newCodePoint >= 65 && newCodePoint <= 90){
