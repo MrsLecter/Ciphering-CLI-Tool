@@ -1,7 +1,8 @@
 const {cipherCaesarStream, cipherRotStream, cipherAtbashStream} = require('./src/transformStream');
 const {Readable, writable} = require('stream');
-//const {CustomReadableStream} = require('./src/readSream');
-//const {CustomWritableStream} = require('./src/writeStream');
+const {customStdin} = require('./src/customStdin');
+const {CustomReadableStream} = require('./src/readSream');
+const {CustomWritableStream} = require('./src/writeStream');
 const {toValidateCommand} = require('./src/validation');
 
 const { stdout, stdin, stderr } = process;
@@ -18,8 +19,8 @@ const [commandOption, cipherMark, inputCommand, inputWay, outputCommand, outputW
 //validate input alias
 toValidateCommand(inputAlias);
 
-const inputStream = ((inputAlias.indexOf('-i') + 1) || (inputAlias.indexOf('-input') + 1)) ? fs.createReadStream(inputWay) : stdin;
-const outputStream = ((inputAlias.indexOf('-o') + 1) || (inputAlias.indexOf('-output') + 1)) ? fs.createWriteStream(outputWay) : stdout;
+const inputStream = ((inputAlias.indexOf('-i') + 1) || (inputAlias.indexOf('-input') + 1)) ? new CustomReadableStream(inputWay) : process.stdin;
+const outputStream = ((inputAlias.indexOf('-o') + 1) || (inputAlias.indexOf('-output') + 1)) ? new CustomWritableStream(outputWay) : stdout;
   
 // create stream pool
 function toReadChipherCommand(cipherMark) {
@@ -41,8 +42,6 @@ function toReadChipherCommand(cipherMark) {
 
 //create pipeline
 function toConvertText(commandSequence) {
-  let dataStr = '';
-  let outputStr = null;
   console.log('in toConvertText')
   
   pipeline(

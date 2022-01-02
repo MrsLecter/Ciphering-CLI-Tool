@@ -1,4 +1,5 @@
 const {Writable} = require('stream');
+const fs = require('fs');
 
 class CustomWritableStream extends Writable{
     constructor(filename) {

@@ -1,4 +1,5 @@
 const { Readable } = require('stream');
+const fs = require('fs');
 
 class CustomReadableStream extends Readable {
     constructor(filename) {
