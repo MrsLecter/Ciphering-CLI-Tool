@@ -16,7 +16,7 @@
       <li>R is for ROT-8 cipher</li>
       <li>Y is flag of encoding or decoding (mandatory for Caesar cipher and ROT-8 cipher and should not be passed Atbash cipher)</li>
         <li>1 is for encoding</li>
-        <li>0 is for decoding</li></ul>
+        <li>0 is for decoding</li></ul></li>
     <li>-i, --input: a path to input file</li>
     <li>-o, --output: a path to output file</li>
   </ul>
